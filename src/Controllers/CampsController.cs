@@ -37,5 +37,21 @@ namespace CoreCodeCamp.Controllers
             _repository = repository;
             _mapper = mapper;
         }
+
+        [HttpGet("{moniker}")]
+        public ActionResult<CampModel> Get(string moniker)
+        {
+            try
+            {
+                var result = _repository.GetCampAsync(moniker);
+                if (result == null) return NotFound();
+                return _mapper.Map<CampModel>(result);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
+            }
+
+        }
     }
 }
