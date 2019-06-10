@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CoreCodeCamp.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CoreCodeCamp.Models;
 
 namespace CoreCodeCamp.Controllers
 {
@@ -18,9 +20,10 @@ namespace CoreCodeCamp.Controllers
             try
             {
                 var results = await _repository.GetAllCampsAsync();
-                return Ok(results);
+                CampModel[] models = _mapper.Map<CampModel[]>(results);
+                return Ok(models);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //return BadRequest("Database Failure");
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
@@ -28,10 +31,12 @@ namespace CoreCodeCamp.Controllers
         }
 
         private readonly ICampRepository _repository;
+        private readonly IMapper _mapper;
 
-        public CampsController(ICampRepository repository)
+        public CampsController(ICampRepository repository, IMapper mapper )
         {
             _repository = repository;
+            _mapper = mapper;
         }
     }
 }
