@@ -39,15 +39,15 @@ namespace CoreCodeCamp.Controllers
         }
 
         [HttpGet("{moniker}")]
-        public ActionResult<CampModel> Get(string moniker)
+        public async Task<ActionResult<CampModel>> Get(string moniker)
         {
             try
             {
-                var result = _repository.GetCampAsync(moniker);
+                var result = await _repository.GetCampAsync(moniker);
                 if (result == null) return NotFound();
                 return _mapper.Map<CampModel>(result);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
             }
